@@ -1,6 +1,8 @@
 package rollerfall;
 
 import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 
 public class Roller {
 	final int MOVESPEED = 15;
@@ -9,6 +11,8 @@ public class Roller {
 
 	private int centerX = 240;
 	private int centerY = 0;
+	private int centerXvirt = 240;
+	private int centerYvirt = 0;
 
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
@@ -17,17 +21,22 @@ public class Roller {
 	private static Background bg2 = StartingClass.getBg2();
 
 	private static Graphics g = StartingClass.getG();
-	
+	private static Path2D.Double path = StartingClass.getPath();
+
 	private int speedX = 0;
 	private int speedY = FALLSPEED;
 
-	private int rotate;
-	
+	private int rotate=90;
+
+	private double yTranslate = 0;
+	private double xTranslate = 0;
+
 	public void update() {
 
 		// Moves Character or Scrolls Background accordingly.
 		if (speedY < 0) {
 			centerY += speedY;
+			centerYvirt += speedY;
 		}
 		if (speedY == 0 || speedY < 0) {
 			{
@@ -36,12 +45,17 @@ public class Roller {
 
 			}
 		}
+
 		if (centerY <= 400 && speedY > 0) {
 			centerY += speedY;
+			centerYvirt += speedY;
 		}
 		if (speedY > 0 && centerY > 400) {
-			bg1.setSpeedY(-FALLSPEED);
-			bg2.setSpeedY(-FALLSPEED);
+			bg1.setSpeedY(-FALLSPEED * 2);
+			bg2.setSpeedY(-FALLSPEED * 2);
+			centerYvirt += FALLSPEED;
+			yTranslate -= FALLSPEED;
+//			xTranslate -= 0.8;
 		}
 
 		// Updates X Position
@@ -58,17 +72,23 @@ public class Roller {
 		}
 	}
 
+	public int getCenterXvirt() {
+		return centerXvirt;
+	}
+
+	public int getCenterYvirt() {
+		return centerYvirt;
+	}
+
 	public void moveRight() {
-//		speedX = MOVESPEED;
+		// speedX = MOVESPEED;
 		this.rotate += MOVESPEED;
-		
-		
+
 	}
 
 	public void moveLeft() {
 		this.rotate -= MOVESPEED;
-		
-		
+
 	}
 
 	public void stopRight() {
@@ -151,13 +171,13 @@ public class Roller {
 		Roller.bg1 = bg1;
 	}
 
-//	public static Background getBg2() {
-//		return bg2;
-//	}
-//
-//	public static void setBg2(Background bg2) {
-//		Roller.bg2 = bg2;
-//	}
+	// public static Background getBg2() {
+	// return bg2;
+	// }
+	//
+	// public static void setBg2(Background bg2) {
+	// Roller.bg2 = bg2;
+	// }
 
 	public int getMOVESPEED() {
 		return MOVESPEED;
@@ -169,6 +189,16 @@ public class Roller {
 
 	public void setRotate(int rotate) {
 		this.rotate = rotate;
+	}
+
+	public double getYTranslate() {
+		// TODO Auto-generated method stub
+		return this.yTranslate;
+	}
+
+	public double getXTranslate() {
+		// TODO Auto-generated method stub
+		return this.xTranslate;
 	}
 
 }

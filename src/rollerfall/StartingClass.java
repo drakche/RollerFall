@@ -28,6 +28,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 	private static Background bg1, bg2;
 	public static Image tile;
 	private ArrayList<Tile> tileArray = new ArrayList<Tile>();
+	private static Path2D.Double path;
 
 	@Override
 	public void init() {
@@ -56,7 +57,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		bg1 = new Background(0, 0);
 		bg2 = new Background(0, 1000);
 
-		for (int yCoord = 0; yCoord < 20; yCoord++) {
+		for (int yCoord = 0; yCoord < 500; yCoord++) {
 			float x = 0;
 			if (yCoord > 10)
 				x = Noise.InterpolatedNoise(yCoord);
@@ -118,7 +119,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		for (int i = 1; i < tileArray.size() / 2; i++) {
 			g2D.setStroke(new BasicStroke(100, BasicStroke.CAP_ROUND,
 					BasicStroke.JOIN_ROUND));
-			Path2D.Double path = new Path2D.Double();
+			path = new Path2D.Double();
 			Tile t1 = (Tile) tileArray.get(i * 2 - 1);
 			Tile t2 = (Tile) tileArray.get(i * 2);
 			Tile t3 = (Tile) tileArray.get(i * 2 + 1);
@@ -137,15 +138,27 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			path.curveTo(cx2a, cy2a, cx2b, cy2b, t3.getTileX(), t3.getTileY());
 			// BufferedImage bufferedBg =
 			// StartingClass.toBufferedImage(backgrnd);
-			AffineTransform tx = AffineTransform.getRotateInstance(
-					Math.toRadians(roller.getRotate()), 240, 400);
+			// AffineTransform tx = AffineTransform.getRotateInstance(
+			// Math.toRadians(roller.getRotate()), 240, 400);
+			// AffineTransform tx2 = AffineTransform.getTranslateInstance(0,
+			// -5);
 			// AffineTransformOp op = new AffineTransformOp(tx,
 			// AffineTransformOp.TYPE_BILINEAR);
-
+			AffineTransform at = new AffineTransform();
+			AffineTransform at2 = new AffineTransform();
+			at.rotate(Math.toRadians(roller.getRotate()), 240, roller.getCenterYvirt());
+			at2.translate(0, roller.getYTranslate());
 			// g2D.rotate(Math.toRadians(roller.getRotate()));
-			path.transform(tx);
+			// path.transform(tx);
+			path.transform(at);
+			
+			path.transform(at2);
 			g2D.draw(path);
 		}
+	}
+
+	public static Path2D.Double getPath() {
+		return StartingClass.path;
 	}
 
 	@Override
