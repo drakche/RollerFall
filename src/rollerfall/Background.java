@@ -46,18 +46,18 @@ public class Background {
 		this.speedY = speedY;
 	}
 
-	public void rotateLeft(double rad) {
-		this.rotation -= rad;
-
-	}
-
-	public void rotateRight(double rad) {
-		// TODO Auto-generated method stub
-		this.rotation += rad;
-	}
-
-	public double getRotation() {
-		// TODO Auto-generated method stub
-		return this.rotation;
-	}
+//	public void rotateLeft(double rad) {
+//		this.rotation -= rad;
+//
+//	}
+//
+//	public void rotateRight(double rad) {
+//		// TODO Auto-generated method stub
+//		this.rotation += rad;
+//	}
+//
+//	public double getRotation() {
+//		// TODO Auto-generated method stub
+//		return this.rotation;
+//	}
 }

@@ -1,17 +1,21 @@
 package rollerfall;
 
 import java.applet.Applet;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Stroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class StartingClass extends Applet implements Runnable, KeyListener {
 
@@ -20,8 +24,10 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 	private Image image, character;
 	private static Image backgrnd;
 	private URL base;
-	private Graphics second;
+	private static Graphics second;
 	private static Background bg1, bg2;
+	public static Image tile;
+	private ArrayList<Tile> tileArray = new ArrayList<Tile>();
 
 	@Override
 	public void init() {
@@ -42,12 +48,23 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		// Image Setups
 		character = getImage(base, "data/roller.png");
 		backgrnd = getImage(base, "data/back.png");
+		tile = getImage(base, "data/tile.png");
 	}
 
 	@Override
 	public void start() {
 		bg1 = new Background(0, 0);
 		bg2 = new Background(0, 1000);
+
+		for (int yCoord = 0; yCoord < 20; yCoord++) {
+			float x = 0;
+			if (yCoord > 10)
+				x = Noise.InterpolatedNoise(yCoord);
+			int xCoord = 240 + (int) (240 * x);
+			tileArray.add(new Tile(xCoord, yCoord * 40));
+
+		}
+
 		roller = new Roller();
 		Thread thread = new Thread(this);
 		thread.start();
@@ -72,6 +89,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			roller.update();
 			bg1.update();
 			bg2.update();
+			updateTiles();
 			repaint();
 			try {
 				Thread.sleep(17);
@@ -81,6 +99,53 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 		}
 
+	}
+
+	private void updateTiles() {
+
+		for (int i = 0; i < tileArray.size(); i++) {
+			Tile t = (Tile) tileArray.get(i);
+			t.update();
+		}
+
+	}
+
+	private void paintTiles(Graphics g) {
+		// Path2D.Double path = new Path2D.Double();
+		Graphics2D g2D = (Graphics2D) g;
+		g2D.setColor(Color.BLACK);
+
+		for (int i = 1; i < tileArray.size() / 2; i++) {
+			g2D.setStroke(new BasicStroke(100, BasicStroke.CAP_ROUND,
+					BasicStroke.JOIN_ROUND));
+			Path2D.Double path = new Path2D.Double();
+			Tile t1 = (Tile) tileArray.get(i * 2 - 1);
+			Tile t2 = (Tile) tileArray.get(i * 2);
+			Tile t3 = (Tile) tileArray.get(i * 2 + 1);
+			path.moveTo(t1.getTileX(), t1.getTileY());
+			double cx1a = t1.getTileX() + (t2.getTileX() - t1.getTileX()) / 3;
+			double cy1a = t1.getTileY() + (t2.getTileY() - t1.getTileY()) / 3;
+			double cx1b = t2.getTileX() - (t3.getTileX() - t1.getTileX()) / 3;
+			double cy1b = t2.getTileY() - (t3.getTileY() - t1.getTileY()) / 3;
+			double cx2a = t2.getTileX() + (t3.getTileX() - t1.getTileX()) / 3;
+			double cy2a = t2.getTileY() + (t3.getTileY() - t1.getTileY()) / 3;
+			double cx2b = t3.getTileX() - (t3.getTileX() - t2.getTileX()) / 3;
+			double cy2b = t3.getTileY() - (t3.getTileY() - t2.getTileY()) / 3;
+			// g.drawLine(t.getTileX(), t.getTileY(), t2.getTileX(),
+			// t2.getTileY());
+			path.curveTo(cx1a, cy1a, cx1b, cy1b, t2.getTileX(), t2.getTileY());
+			path.curveTo(cx2a, cy2a, cx2b, cy2b, t3.getTileX(), t3.getTileY());
+			// BufferedImage bufferedBg =
+			// StartingClass.toBufferedImage(backgrnd);
+			AffineTransform tx = AffineTransform.getRotateInstance(
+					Math.toRadians(roller.getRotate()), 240, 400);
+			// AffineTransformOp op = new AffineTransformOp(tx,
+			// AffineTransformOp.TYPE_BILINEAR);
+
+			// g2D.rotate(Math.toRadians(roller.getRotate()));
+			path.transform(tx);
+			g2D.draw(path);
+		}
 	}
 
 	@Override
@@ -112,7 +177,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		}
 
 		// Create a buffered image with transparency
-		BufferedImage bimage = new BufferedImage(480, 800,
+		BufferedImage bimage = new BufferedImage(1000, 1000,
 				BufferedImage.TYPE_INT_ARGB);
 
 		// Draw the image on to the buffered image
@@ -126,23 +191,27 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 	@Override
 	public void paint(Graphics g) {
+		setGraphics(g);
 		// TODO Auto-generated method stub
-		double rotationRequired = Math.toRadians(bg1.getRotation());
+		// double rotationRequired = Math.toRadians(roller.getRotate());
 		if (backgrnd == null)
 			return;
-		BufferedImage bufferedBg = StartingClass.toBufferedImage(backgrnd);
-		AffineTransform tx = AffineTransform.getRotateInstance(
-				rotationRequired, 240, 400);
-		AffineTransformOp op = new AffineTransformOp(tx,
-				AffineTransformOp.TYPE_BILINEAR);
 
-		g.drawImage(op.filter(bufferedBg, null), bg1.getBgX(), bg1.getBgY(),
-				this);
-		g.drawImage(op.filter(bufferedBg, null), bg2.getBgX(), bg2.getBgY(),
-				this);
-
+		g.drawImage(backgrnd, bg1.getBgX(), bg1.getBgY(), this);
+		g.drawImage(backgrnd, bg2.getBgX(), bg2.getBgY(), this);
+		paintTiles(g);
 		g.drawImage(character, roller.getCenterX() - 37,
 				roller.getCenterY() - 37, this);
+
+	}
+
+	private void setGraphics(Graphics g) {
+		StartingClass.second = g;
+
+	}
+
+	public static Graphics getG() {
+		return StartingClass.second;
 	}
 
 	public static Background getBg2() {

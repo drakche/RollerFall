@@ -1,7 +1,9 @@
 package rollerfall;
 
+import java.awt.Graphics;
+
 public class Roller {
-	final int MOVESPEED = 1;
+	final int MOVESPEED = 15;
 
 	private int FALLSPEED = 1;
 
@@ -14,9 +16,13 @@ public class Roller {
 	private static Background bg1 = StartingClass.getBg1();
 	private static Background bg2 = StartingClass.getBg2();
 
+	private static Graphics g = StartingClass.getG();
+	
 	private int speedX = 0;
 	private int speedY = FALLSPEED;
 
+	private int rotate;
+	
 	public void update() {
 
 		// Moves Character or Scrolls Background accordingly.
@@ -54,14 +60,14 @@ public class Roller {
 
 	public void moveRight() {
 //		speedX = MOVESPEED;
-		bg1.rotateRight(MOVESPEED);
-		bg2.rotateRight(MOVESPEED);
+		this.rotate += MOVESPEED;
+		
 		
 	}
 
 	public void moveLeft() {
-		bg1.rotateLeft(MOVESPEED);
-		bg2.rotateRight(MOVESPEED);
+		this.rotate -= MOVESPEED;
+		
 		
 	}
 
@@ -155,6 +161,14 @@ public class Roller {
 
 	public int getMOVESPEED() {
 		return MOVESPEED;
+	}
+
+	public int getRotate() {
+		return rotate;
+	}
+
+	public void setRotate(int rotate) {
+		this.rotate = rotate;
 	}
 
 }
