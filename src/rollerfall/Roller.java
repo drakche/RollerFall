@@ -51,9 +51,9 @@ public class Roller {
 			centerYvirt += speedY;
 		}
 		if (speedY > 0 && centerY > 400) {
-			bg1.setSpeedY(-FALLSPEED * 2);
-			bg2.setSpeedY(-FALLSPEED * 2);
-			centerYvirt += FALLSPEED;
+			bg1.setSpeedY(-FALLSPEED * 5);
+			bg2.setSpeedY(-FALLSPEED * 5);
+//			centerYvirt += speedY;
 			yTranslate -= FALLSPEED;
 //			xTranslate -= 0.8;
 		}

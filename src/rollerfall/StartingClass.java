@@ -152,13 +152,15 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			AffineTransform at = new AffineTransform();
 			AffineTransform at2 = new AffineTransform();
 			at.rotate(Math.toRadians(roller.getRotate()), 240, roller.getCenterYvirt());
-			at2.translate(0, roller.getYTranslate());
+			at.translate(0, roller.getYTranslate());
 			// g2D.rotate(Math.toRadians(roller.getRotate()));
-			// path.transform(tx);
+			// path.transform(tx);			
 			path.transform(at);
-			
-			path.transform(at2);
+//			path.transform(at2);
 			g2D.draw(path);
+			
+			
+//			g2D.setTransform(at);
 		}
 	}
 
