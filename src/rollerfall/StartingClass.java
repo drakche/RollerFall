@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class StartingClass extends Applet implements Runnable, KeyListener {
 
@@ -58,17 +59,21 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		bg2 = new Background(0, 1000);
 
 		for (int yCoord = 0; yCoord < 500; yCoord++) {
-			float x = 0;
-			if (yCoord > 10)
-				x = Noise.InterpolatedNoise(yCoord);
-			int xCoord = 240 + (int) (240 * x);
-			tileArray.add(new Tile(xCoord, yCoord * 40));
+			addNewMazeTile(yCoord);
 
 		}
 
 		roller = new Roller();
 		Thread thread = new Thread(this);
 		thread.start();
+	}
+
+	private void addNewMazeTile(int yCoord) {
+		float x = 0;
+		if (yCoord > 10)
+			x = Noise.InterpolatedNoise(new Random().nextInt());
+		int xCoord = 240 + (int) (240 * x);
+		tileArray.add(new Tile(xCoord, yCoord * 40));
 	}
 
 	@Override

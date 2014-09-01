@@ -26,7 +26,7 @@ public class Roller {
 	private int speedX = 0;
 	private int speedY = FALLSPEED;
 
-	private int rotate=90;
+	private int rotate=0;
 
 	private double yTranslate = 0;
 	private double xTranslate = 0;
