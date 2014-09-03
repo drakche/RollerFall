@@ -26,7 +26,7 @@ public class Roller {
 	private int speedX = 0;
 	private int speedY = FALLSPEED;
 
-	private int rotate=0;
+	private int rotate = 0;
 
 	private double yTranslate = 0;
 	private double xTranslate = 0;
@@ -53,9 +53,16 @@ public class Roller {
 		if (speedY > 0 && centerY > 400) {
 			bg1.setSpeedY(-FALLSPEED * 5);
 			bg2.setSpeedY(-FALLSPEED * 5);
-//			centerYvirt += speedY;
-			yTranslate -= FALLSPEED;
-//			xTranslate -= 0.8;
+			// centerYvirt += speedY;
+			// yTranslate -= FALLSPEED;
+			// xTranslate -= ((double)this.rotate/90.0);
+			double x = Math.sin(this.rotate);
+			double y = Math.cos(this.rotate);
+			double translate=x / (x + y);
+			xTranslate -= translate;
+			// yTranslate -= ((90.0-(double)this.rotate)/90.0);
+			yTranslate -= 1 - translate;
+			// xTranslate -= 0.8;
 		}
 
 		// Updates X Position
